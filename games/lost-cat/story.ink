@@ -5,6 +5,8 @@ VAR cat_found = false
 VAR clue_count = 0
 VAR kindness_level = 0
 
+-> start
+
 === start ===
 당신은 아침에 일어나 고양이 '나비'가 없어진 것을 발견했다.
 

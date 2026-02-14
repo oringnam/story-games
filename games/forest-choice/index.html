@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>숲의 선택 - Story Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Header -->
+        <div id="game-header">
+            <h1 id="game-title">🌲 숲의 선택</h1>
+            <p id="game-subtitle">당신의 선택이 운명을 결정합니다</p>
+        </div>
+
+        <!-- Scene Display -->
+        <div id="scene-container">
+            <div id="scene-text"></div>
+            <div id="choices-container"></div>
+        </div>
+
+        <!-- Game Controls -->
+        <div id="game-controls">
+            <button class="control-button" id="save-button">💾 저장</button>
+            <button class="control-button" id="load-button">📂 불러오기</button>
+            <button class="control-button" id="restart-button">🔄 처음부터</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../common/story-engine.js"></script>
+    <script src="../../common/save-system.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

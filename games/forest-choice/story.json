@@ -1,0 +1,111 @@
+{
+  "title": "숲의 선택",
+  "description": "어두운 숲에서 당신의 운명을 결정하세요.",
+  "author": "Story Games",
+  "scenes": {
+    "start": {
+      "text": "🌲 당신은 어두운 숲 한가운데 서 있습니다.\n\n앞에는 두 갈래 길이 보입니다.\n왼쪽 길에서는 희미한 빛이 새어나오고,\n오른쪽 길에서는 물소리가 들립니다.",
+      "choices": [
+        {
+          "text": "💡 왼쪽 길 (빛)로 간다",
+          "next": "left_light"
+        },
+        {
+          "text": "💧 오른쪽 길 (물소리)로 간다",
+          "next": "right_water"
+        }
+      ]
+    },
+
+    "left_light": {
+      "text": "🏠 빛을 따라가자 작은 오두막이 나타났습니다.\n\n문 앞에는 낡은 메모가 붙어있습니다:\n\"들어오세요. 하지만 규칙을 지켜야 합니다.\"\n\n안에서는 따뜻한 불빛이 새어나옵니다.",
+      "choices": [
+        {
+          "text": "🚪 오두막에 들어간다",
+          "next": "cabin_inside",
+          "setFlag": { "enteredCabin": true }
+        },
+        {
+          "text": "🔙 되돌아가서 다른 길로 간다",
+          "next": "right_water"
+        }
+      ]
+    },
+
+    "right_water": {
+      "text": "🌊 물소리를 따라가자 맑은 시냇물이 나타났습니다.\n\n물가에는 신비로운 빛을 내는 돌이 하나 놓여있습니다.\n만지면 무언가 일어날 것 같습니다.",
+      "choices": [
+        {
+          "text": "✨ 빛나는 돌을 만진다",
+          "next": "magic_stone",
+          "setFlag": { "touchedStone": true }
+        },
+        {
+          "text": "💧 물을 마신다",
+          "next": "drink_water"
+        },
+        {
+          "text": "🔙 되돌아가서 다른 길로 간다",
+          "next": "left_light",
+          "condition": { "enteredCabin": false }
+        }
+      ]
+    },
+
+    "cabin_inside": {
+      "text": "🔥 오두막 안에는 따뜻한 난로가 타오르고 있습니다.\n\n탁자 위에는 메모가 하나 더 있습니다:\n\"이곳에서 쉬어가세요. 하지만 해가 지기 전에 떠나야 합니다.\"\n\n창밖을 보니 해가 점점 지고 있습니다.",
+      "choices": [
+        {
+          "text": "😴 난로 옆에서 잠시 쉰다",
+          "next": "rest_cabin"
+        },
+        {
+          "text": "🏃 서둘러 오두막을 떠난다",
+          "next": "leave_cabin"
+        }
+      ]
+    },
+
+    "rest_cabin": {
+      "text": "😌 당신은 따뜻한 난로 옆에서 잠시 눈을 붙였습니다.\n\n잠에서 깨어보니...\n해가 이미 완전히 지고, 오두막은 아늑한 집으로 변해있습니다.\n\n당신은 이곳의 새로운 주인이 되었습니다.",
+      "ending": true,
+      "endingType": "peaceful",
+      "endingTitle": "🏠 평화로운 은둔",
+      "endingText": "당신은 숲의 오두막에서 평화롭게 살게 되었습니다.\n더 이상 외로운 방랑자가 아닙니다."
+    },
+
+    "leave_cabin": {
+      "text": "🏃 당신은 서둘러 오두막을 나왔습니다.\n\n뒤를 돌아보니 오두막이 점점 희미해지더니 사라졌습니다.\n\n앞에는 숲을 벗어나는 길이 보입니다.",
+      "choices": [
+        {
+          "text": "🌅 숲을 떠난다",
+          "next": "escape_forest"
+        }
+      ]
+    },
+
+    "magic_stone": {
+      "text": "✨ 돌을 만지자 눈부신 빛이 터져나왔습니다!\n\n당신의 몸이 점점 투명해지더니...\n\n당신은 숲의 정령이 되었습니다.\n이제 이 숲을 영원히 지킬 수 있게 되었습니다.",
+      "ending": true,
+      "endingType": "magical",
+      "endingTitle": "✨ 숲의 정령",
+      "endingText": "당신은 숲을 지키는 정령이 되었습니다.\n영원히 이곳을 떠날 수 없지만, 숲과 하나가 되었습니다."
+    },
+
+    "drink_water": {
+      "text": "💧 맑은 물을 마시자 몸에 힘이 솟습니다.\n\n물가를 따라 걷다보니 숲의 출구가 보입니다!\n\n당신은 무사히 숲을 빠져나갔습니다.",
+      "ending": true,
+      "endingType": "escape",
+      "endingTitle": "🌅 탈출 성공",
+      "endingText": "당신은 무사히 어두운 숲을 벗어났습니다.\n새로운 모험이 당신을 기다립니다."
+    },
+
+    "escape_forest": {
+      "text": "🌅 당신은 숲의 가장자리에 도착했습니다.\n\n뒤를 돌아보니 숲은 고요하게 서 있습니다.\n\n당신은 무사히 숲을 빠져나갔습니다.",
+      "ending": true,
+      "endingType": "escape",
+      "endingTitle": "🌅 탈출 성공",
+      "endingText": "당신은 무사히 어두운 숲을 벗어났습니다.\n오두막의 기억은 아련한 꿈처럼 남았습니다."
+    }
+  }
+}

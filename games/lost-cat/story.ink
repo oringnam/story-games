@@ -174,7 +174,7 @@ VAR kindness_level = 0
 
 -> END
 
-=== FUNCTION display_stats ===
+=== function display_stats ===
 단서 발견: {clue_count}개
 친절도: {kindness_level}
 

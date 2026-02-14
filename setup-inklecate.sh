@@ -5,7 +5,7 @@
 set -e
 
 INKLECATE_VERSION="1.2.0"
-DOWNLOAD_URL="https://github.com/inkle/ink/releases/download/v${INKLECATE_VERSION}/inklecate_mac.zip"
+DOWNLOAD_URL="https://github.com/inkle/ink/releases/download/v.${INKLECATE_VERSION}/inklecate_mac.zip"
 TMP_DIR="/tmp/inklecate-setup"
 TOOLS_DIR="./tools"
 

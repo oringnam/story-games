@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🐱 잃어버린 고양이</title>
+    
+    <!-- Ink.js CDN -->
+    <script src="https://unpkg.com/inkjs@2.0.0/dist/ink.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            max-height: 800px;
+        }
+
+        /* 헤더 */
+        .game-header {
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .game-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* 텍스트 영역 */
+        .text-container {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        .text-container p {
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .text-container p:last-child {
+            margin-bottom: 0;
+        }
+
+        .text-container b,
+        .text-container strong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .text-container i,
+        .text-container em {
+            color: #3498db;
+            font-style: italic;
+        }
+
+        .text-container center {
+            display: block;
+            text-align: center;
+            margin: 30px 0;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* 선택지 영역 */
+        .choices-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .choice-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .choice-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .choice-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .choice-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .choice-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 상태 바 */
+        .status-bar {
+            padding: 12px 20px;
+            background: #ecf0f1;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .status-bar.saved {
+            background: #d4edda;
+            color: #155724;
+            animation: pulse 0.5s ease;
+        }
+
+        /* 엔딩 모달 */
+        .ending-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ending-modal.visible {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        .modal-content h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .stats {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-buttons button:first-child {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-buttons button:last-child {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .modal-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 로딩 화면 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.5em;
+            color: #95a5a6;
+        }
+
+        /* 스크롤바 스타일 */
+        .text-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .text-container::-webkit-scrollbar-track {
+            background: #ecf0f1;
+        }
+
+        .text-container::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 4px;
+        }
+
+        .text-container::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+
+        /* 모바일 최적화 */
+        @media (max-width: 600px) {
+            .game-container {
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+            }
+
+            .game-title {
+                font-size: 1.5em;
+            }
+
+            .text-container {
+                padding: 20px;
+                font-size: 1em;
+            }
+
+            .choice-button {
+                padding: 16px;
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title">🐱 잃어버린 고양이</div>
+            <div class="game-subtitle">당신의 선택이 이야기를 만듭니다</div>
+        </div>
+
+        <div class="text-container" id="text-container">
+            <div class="loading">스토리를 불러오는 중...</div>
+        </div>
+
+        <div class="choices-container" id="choices-container"></div>
+
+        <div class="status-bar" id="status-bar">
+            준비 중...
+        </div>
+    </div>
+
+    <!-- 공통 모듈 -->
+    <script src="../../common/save-manager.js"></script>
+    <script src="../../common/ink-engine.js"></script>
+    <script src="../../common/story-ui.js"></script>
+
+    <!-- 게임 로직 -->
+    <script>
+        let engine, ui, saveManager;
+
+        // 스토리 JSON 로드 및 게임 시작
+        async function initGame() {
+            try {
+                // story.json 로드
+                const response = await fetch('story.json');
+                const storyJson = await response.text();
+
+                // 시스템 초기화
+                saveManager = new SaveManager('lost-cat');
+                engine = new StoryEngine(storyJson, saveManager);
+                
+                const textContainer = document.getElementById('text-container');
+                const choicesContainer = document.getElementById('choices-container');
+                ui = new StoryUI(textContainer, choicesContainer);
+
+                // 이벤트 리스너
+                engine.on('onEnd', handleStoryEnd);
+
+                // 저장된 게임 확인
+                if (saveManager.hasAutoSave()) {
+                    if (confirm('이어하기 하시겠습니까?')) {
+                        const saveState = saveManager.loadAutoSave();
+                        engine.loadSaveState(saveState);
+                    }
+                }
+
+                // 게임 시작
+                startStory();
+                updateStatus('자동 저장됨');
+
+            } catch (error) {
+                console.error('Failed to load story:', error);
+                document.getElementById('text-container').innerHTML = 
+                    '<p style="color: red;">스토리를 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        // 스토리 진행
+        function startStory() {
+            ui.clearText();
+            continueStory();
+        }
+
+        // 계속 진행
+        async function continueStory() {
+            // 텍스트 출력
+            while (engine.story.canContinue) {
+                const text = engine.continue();
+                await ui.displayText(text);
+            }
+
+            // 선택지 표시
+            const choices = engine.getChoices();
+            if (choices.length > 0) {
+                ui.renderChoices(choices, handleChoice);
+            }
+        }
+
+        // 선택 처리
+        async function handleChoice(index) {
+            engine.choose(index);
+            await continueStory();
+        }
+
+        // 스토리 종료 처리
+        function handleStoryEnd() {
+            const clueCount = engine.getVariable('clue_count') || 0;
+            const kindness = engine.getVariable('kindness_level') || 0;
+            const catFound = engine.getVariable('cat_found');
+
+            const stats = {
+                '단서 발견': `${clueCount}개`,
+                '친절도': kindness
+            };
+
+            ui.showEndingModal('🎉 스토리 완료!', stats);
+            
+            // 자동 저장 삭제 (엔딩 도달)
+            saveManager.deleteSave(null);
+        }
+
+        // 상태 바 업데이트
+        function updateStatus(message) {
+            const statusBar = document.getElementById('status-bar');
+            statusBar.textContent = message;
+            statusBar.classList.add('saved');
+            setTimeout(() => statusBar.classList.remove('saved'), 2000);
+        }
+
+        // 게임 초기화
+        window.addEventListener('DOMContentLoaded', initGame);
+
+        // 탭 전환 시 자동 저장
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && engine && !engine.hasEnded()) {
+                saveManager.autoSave(engine.getSaveState());
+            }
+        });
+    </script>
+</body>
+</html>
